@@ -11,45 +11,10 @@ namespace LiveSplit.Daikatana
     {
         private static readonly Type[] eventTypes = new Type[] { typeof(LoadedMapEvent),
                                                                  typeof(FinishedMapEvent) };
-
         public override Type[] EventTypes => eventTypes;
 
         public override string Name => "Daikatana";
         public override string ProcessName => "daikatana";
-    }
-
-    abstract class DaikatanaEvent : GameEvent
-    {
-    }
-
-    abstract class MapEvent : DaikatanaEvent
-    {
-        private static readonly string[] attributeNames = { "Map" };
-
-        public override string[] AttributeNames => attributeNames;
-        public override string[] AttributeValues { get; protected set; }
-
-        protected readonly string map;
-
-        public MapEvent()
-        {
-            map = "";
-            AttributeValues = new string[] { "" };
-        }
-
-        public MapEvent(string map)
-        {
-            if (map.EndsWith(".bsp"))
-            {
-                this.map = map;
-            }
-            else
-            {
-                this.map = map + ".bsp";
-            }
-
-            AttributeValues = new string[] { this.map };
-        }
     }
 
     class LoadedMapEvent : MapEvent
@@ -119,15 +84,8 @@ namespace LiveSplit.ComponentAutosplitter
 
         private Int32 mapAddress = 0x104FBB1;
         private Int32 gameStateAddress = 0x7067F8;
-        private IntPtr baseAddress;
 
-        public GameInfo(Process gameProcess)
-        {
-            this.gameProcess = gameProcess;
-            baseAddress = gameProcess.MainModule.BaseAddress;
-        }
-
-        public void Update()
+        partial void UpdateInfo()
         {
             int gameState;
             if (gameProcess.ReadValue(baseAddress + gameStateAddress, out gameState))
