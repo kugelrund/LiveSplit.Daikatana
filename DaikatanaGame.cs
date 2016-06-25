@@ -116,7 +116,6 @@ namespace LiveSplit.ComponentAutosplitter
         public string PreviousMap { get; private set; }
         public string CurrentMap { get; private set; }
         public bool MapChanged { get; private set; }
-        public bool InGame { get; private set; }
 
         private Int32 mapAddress = 0x104FBB1;
         private Int32 gameStateAddress = 0x7067F8;
