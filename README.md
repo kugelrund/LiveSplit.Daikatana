@@ -1,1 +1,2 @@
-# LiveSplit.Daikatana
+LiveSplit.Daikatana
+===================
