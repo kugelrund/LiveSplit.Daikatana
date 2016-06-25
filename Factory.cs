@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Reflection;
+using LiveSplit.ComponentAutosplitter;
 using LiveSplit.Model;
 using LiveSplit.UI.Components;
-using LiveSplit.ComponentAutosplitter;
 
 namespace LiveSplit.Daikatana
 {
