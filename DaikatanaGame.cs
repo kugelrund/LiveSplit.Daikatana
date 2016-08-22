@@ -9,11 +9,12 @@ namespace LiveSplit.Daikatana
     class DaikatanaGame : Game
     {
         private static readonly Type[] eventTypes = new Type[] { typeof(LoadedMapEvent),
-                                                                 typeof(FinishedMapEvent) };
+                                                                 typeof(FinishedMapEvent),
+                                                                 typeof(MikikoDeadEvent) };
         public override Type[] EventTypes => eventTypes;
 
         public override string Name => "Daikatana";
-        public override string ProcessName => "daikatana";
+        public override string[] ProcessNames => new string[] { "daikatana" };
     }
 
     class LoadedMapEvent : MapEvent
@@ -63,6 +64,21 @@ namespace LiveSplit.Daikatana
         }
     }
 
+    class MikikoDeadEvent : NoAttributeEvent
+    {
+        public override string Description => "Mikiko was killed.";
+
+        public override bool HasOccured(GameInfo info)
+        {
+            return info.CurrentMap == "e4m6c.bsp" && info.CurrentMikikoHealth <= 0;
+        }
+
+        public override string ToString()
+        {
+            return "Mikiko dead";
+        }
+    }
+
     public enum DaikatanaState
     {
         Menu = 1, Loading = 3, InGame = 4
@@ -79,10 +95,18 @@ namespace LiveSplit.ComponentAutosplitter
         public DaikatanaState CurrentGameState { get; private set; }
         public string PreviousMap { get; private set; }
         public string CurrentMap { get; private set; }
+        public float CurrentMikikoHealth
+        {
+            get
+            {
+                return mikikoHealthAddress.Deref(gameProcess, 1.0f);
+            }
+        }
         public bool MapChanged { get; private set; }
 
         private Int32 mapAddress = 0x104FBB1;
         private Int32 gameStateAddress = 0x7067F8;
+        private DeepPointer mikikoHealthAddress = new DeepPointer(0x1204F1C, 0x4D8);
 
         partial void UpdateInfo()
         {
