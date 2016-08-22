@@ -106,7 +106,7 @@ namespace LiveSplit.ComponentAutosplitter
 
         private Int32 mapAddress = 0x104FBB1;
         private Int32 gameStateAddress = 0x7067F8;
-        private DeepPointer mikikoHealthAddress = new DeepPointer(0x1204F1C, 0x4D8);
+        private DeepPointer mikikoHealthAddress = new DeepPointer(0x1204DA0, 0x0, 0x0, 0x130);
 
         partial void UpdateInfo()
         {
