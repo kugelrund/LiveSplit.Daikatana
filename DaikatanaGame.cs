@@ -70,7 +70,7 @@ namespace LiveSplit.Daikatana
 
         public override bool HasOccured(GameInfo info)
         {
-            return info.CurrentMap == "e4m6c.bsp" && info.CurrentMikikoHealth <= 0;
+            return info.CurrentMap == "e4m6c.bsp" && info.CurrentMusicFile == "music/katana1.mp3";
         }
 
         public override string ToString()
@@ -95,18 +95,26 @@ namespace LiveSplit.ComponentAutosplitter
         public DaikatanaState CurrentGameState { get; private set; }
         public string PreviousMap { get; private set; }
         public string CurrentMap { get; private set; }
-        public float CurrentMikikoHealth
+        public string CurrentMusicFile
         {
             get
             {
-                return mikikoHealthAddress.Deref(gameProcess, 1.0f);
+                StringBuilder musicFileString = new StringBuilder(32);
+                if (musicFileAddress.DerefString(gameProcess, musicFileString))
+                {
+                    return musicFileString.ToString();
+                }
+                else
+                {
+                    return "";
+                }
             }
         }
         public bool MapChanged { get; private set; }
 
         private Int32 mapAddress = 0x104FBB1;
         private Int32 gameStateAddress = 0x7067F8;
-        private DeepPointer mikikoHealthAddress = new DeepPointer(0x1204DA0, 0x0, 0x0, 0x130);
+        private DeepPointer musicFileAddress = new DeepPointer("audio.dll", 0x11E90);
 
         partial void UpdateInfo()
         {
@@ -130,7 +138,7 @@ namespace LiveSplit.ComponentAutosplitter
 
         public void UpdateMap()
         {
-            StringBuilder mapStringBuilder = new StringBuilder();
+            StringBuilder mapStringBuilder = new StringBuilder(16);
             if (gameProcess.ReadString(baseAddress + mapAddress, mapStringBuilder) &&
                 mapStringBuilder.ToString() != CurrentMap)
             {
