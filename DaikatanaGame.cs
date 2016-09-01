@@ -15,9 +15,32 @@ namespace LiveSplit.Daikatana
 
         public override string Name => "Daikatana";
         public override string[] ProcessNames => new string[] { "daikatana" };
+        public override bool GameTimeExists => false;
+        public override bool LoadRemovalExists => true;
     }
 
-    class LoadedMapEvent : MapEvent
+    abstract class DaikatanaMapEvent : MapEvent
+    {
+        public DaikatanaMapEvent() : base()
+        {
+        }
+
+        public DaikatanaMapEvent(string map)
+        {
+            if (map.EndsWith(".bsp"))
+            {
+                this.map = map;
+            }
+            else
+            {
+                this.map = map + ".bsp";
+            }
+
+            attributeValues = new string[] { this.map };
+        }
+    }
+
+    class LoadedMapEvent : DaikatanaMapEvent
     {
         public override string Description => "A certain map was loaded.";
 
@@ -41,7 +64,7 @@ namespace LiveSplit.Daikatana
         }
     }
 
-    class FinishedMapEvent : MapEvent
+    class FinishedMapEvent : DaikatanaMapEvent
     {
         public override string Description => "A certain map was finished.";
 
