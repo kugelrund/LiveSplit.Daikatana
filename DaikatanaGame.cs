@@ -102,6 +102,11 @@ namespace LiveSplit.Daikatana
         }
     }
 
+    public enum GameVersion
+    {
+        v13_old, v13_2016_10_6
+    }
+
     public enum DaikatanaState
     {
         Menu = 1, Loading = 3, InGame = 4
@@ -135,9 +140,45 @@ namespace LiveSplit.ComponentAutosplitter
         }
         public bool MapChanged { get; private set; }
 
-        private Int32 mapAddress = 0x104FBB1;
-        private Int32 gameStateAddress = 0x7067F8;
-        private DeepPointer musicFileAddress = new DeepPointer("audio.dll", 0x11E90);
+        private Int32 mapAddress;
+        private Int32 gameStateAddress;
+        private DeepPointer musicFileAddress;
+
+        private GameVersion gameVersion;
+
+        partial void GetVersion()
+        {
+            ProcessModuleWow64Safe mainModule = gameProcess.MainModuleWow64Safe();
+            if (!mainModule.ModuleName.EndsWith(".exe"))
+            {
+                // kind of a workaround for MainModuleWow64Safe maybe not returning
+                // the correct module
+                throw new ArgumentException("Process not initialised yet!");
+            }
+
+            if (mainModule.ModuleMemorySize == 20439040)
+            {
+                gameVersion = GameVersion.v13_2016_10_6;
+            }
+            else
+            {
+                gameVersion = GameVersion.v13_old;
+            }
+
+            switch (gameVersion)
+            {
+                case GameVersion.v13_old:
+                    mapAddress = 0x104FBB1;
+                    gameStateAddress = 0x7067F8;
+                    musicFileAddress = new DeepPointer("audio.dll", 0x11E90);
+                    break;
+                case GameVersion.v13_2016_10_6:
+                    mapAddress = 0x74140D;
+                    gameStateAddress = 0x306570;
+                    musicFileAddress = new DeepPointer("audio_openal.dll", 0x4E6B5);
+                    break;
+            }
+        }
 
         partial void UpdateInfo()
         {
