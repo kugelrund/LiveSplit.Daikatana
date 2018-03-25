@@ -104,7 +104,7 @@ namespace LiveSplit.Daikatana
 
     public enum GameVersion
     {
-        v13_old, v13_2016_10_6
+        v13_old, v13_2016_10_6, v13_2018_3_22
     }
 
     public enum DaikatanaState
@@ -160,6 +160,10 @@ namespace LiveSplit.ComponentAutosplitter
             {
                 gameVersion = GameVersion.v13_2016_10_6;
             }
+            else if (mainModule.ModuleMemorySize == 20377600)
+            {
+                gameVersion = GameVersion.v13_2018_3_22;
+            }
             else
             {
                 gameVersion = GameVersion.v13_old;
@@ -176,6 +180,11 @@ namespace LiveSplit.ComponentAutosplitter
                     mapAddress = 0x74140D;
                     gameStateAddress = 0x306570;
                     musicFileAddress = new DeepPointer("audio_openal.dll", 0x4E6B5);
+                    break;
+                case GameVersion.v13_2018_3_22:
+                    mapAddress = 0x6F7D99;
+                    gameStateAddress = 0x2ACEC8;
+                    musicFileAddress = new DeepPointer("audio_openal.dll", 0x4F4C5);
                     break;
             }
         }
